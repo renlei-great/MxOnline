@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'apps.courses.apps.CoursesConfig',  # 注册
     'apps.operation.apps.OperationConfig',  # 注册
     'apps.organization.apps.OrganizationConfig',  # 注册
-    'apps.users.apps.UsersConfig',
+    'apps.users.apps.UsersConfig',  # 注册
 ]
 
 MIDDLEWARE = [
@@ -107,6 +107,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = "users.UserProfile"
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -128,3 +130,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES = [os.path.join(BASE_DIR, 'static')]
+
