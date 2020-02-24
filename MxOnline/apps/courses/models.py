@@ -25,6 +25,9 @@ class Course(BaseModledb):
         verbose_name = "课程信息"
         verbose_name_plural = verbose_name
 
+    def __str__(self):
+        return self.name
+
 
 class Lesson(BaseModledb):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name="课程")  #on_delete表示对应的外键数据被删除后，当前的数据应该怎么办
@@ -34,6 +37,9 @@ class Lesson(BaseModledb):
     class Meta:
         verbose_name = "课程章节"
         verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.name
 
 
 class Video(BaseModledb):
@@ -46,6 +52,9 @@ class Video(BaseModledb):
         verbose_name = "视频"
         verbose_name_plural = verbose_name
 
+    def __str__(self):
+        return self.name
+
 
 class CourseResource(BaseModledb):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name="课程")
@@ -55,4 +64,7 @@ class CourseResource(BaseModledb):
     class Meta:
         verbose_name = "课程资源"
         verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.name
 
