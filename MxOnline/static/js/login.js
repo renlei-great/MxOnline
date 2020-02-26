@@ -95,7 +95,7 @@ $(function() {
 		$(this).parent().removeClass('focus').addClass('blur');
 	});
 
-    // 发送手机验证码
+    // 发送手机验证码s
     $('#jsSendCode').on('click',function(){
         send_sms_code(this,$('#jsMobileTips'));
     });
@@ -114,12 +114,14 @@ $(function() {
         if(!verify){
             return;
         }
+        csrf = $('input[name=csrfmiddlewaretoken]').val()
         $.ajax({
             cache: false,
             type: 'post',
             dataType:'json',
-            url:"/send_sms/",
+            url:"/users/send_sms/",
             data:{
+                'csrfmiddlewaretoken': csrf,
                 mobile:$inpRegMobile.val(),
                 "captcha_1":$inpRegCaptcha.val(),
                 "captcha_0":$('#id_captcha_0').val(),

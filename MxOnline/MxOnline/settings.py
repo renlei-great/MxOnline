@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'xadmin.apps.XAdminConfig',
     'DjangoUeditor',
+    'captcha',  # 发送验证码的包
 ]
 
 MIDDLEWARE = [
@@ -136,3 +137,6 @@ USE_TZ = False
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
+# 云片网设置
+# 发送短信使用的ａｐｉｋｅｙ
+APIKEY = 'dfcdfc5bd61eace635fee2d0b5084b87'
