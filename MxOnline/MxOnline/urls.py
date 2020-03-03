@@ -18,12 +18,14 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 from django.conf.urls import url
 
-from apps.users import urls
+from apps.users import users_urls
+from apps.organization import org_urls
 import xadmin
 
 urlpatterns = [
     path('xadmin/', xadmin.site.urls),
     path('index/', TemplateView.as_view(template_name='index.html'), name='index'),  # 主页
-    path('users/', include((urls, 'users'))),  # 用户模块
+    path('users/', include((users_urls, 'users'))),  # 用户模块
+    path('org/', include((org_urls, 'org'))),  # 用户机构模块
     url(r'^captcha/', include('captcha.urls')),  # 验证码
 ]

@@ -19,8 +19,10 @@ def send_captcha(apikey, mobile, andom):
         'text': text,
     }
     # 发送请求
-    res = requests.post(url, data=data)
-    return json.loads(res.text)
+    # res = requests.post(url, data=data)
+    # return json.loads(res.text)
+    ret_test = {'http_status_code': 400, 'code': 0, 'msg': '发送成功', 'detail': '参数 mobile 格式不正确，mobile:15561245'}
+    return ret_test
 
 
 if __name__ == "__main__":

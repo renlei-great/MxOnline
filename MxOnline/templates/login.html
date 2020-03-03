@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load staticfiles %}
 <html>
 
 <head>
@@ -6,15 +7,15 @@
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" >
 	<title>慕学在线网登录</title>
-	<link rel="stylesheet" type="text/css" href="/static/css/reset.css">
-	<link rel="stylesheet" type="text/css" href="/static/css/login.css">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
 </head>
 <body>
 <div class="dialog" id="jsDialog">
 <!--提示弹出框-->
 <div class="successbox dialogbox" id="jsSuccessTips">
     <h1>成功提交</h1>
-    <div class="close jsCloseDialog"><img src="/static/images/dig_close.png"/></div>
+    <div class="close jsCloseDialog"><img src="{% static 'images/dig_close.png' %}"/></div>
     <div class="cont">
         <h2>您的需求提交成功！</h2>
         <p></p>
@@ -22,9 +23,9 @@
 </div>
 <div  class="noactivebox dialogbox" id="jsUnactiveForm" >
     <h1>邮件验证提示</h1>
-    <div class="close jsCloseDialog"><img src="/static/images/dig_close.png"/></div>
+    <div class="close jsCloseDialog"><img src="{% static 'images/dig_close.png' %}"/></div>
     <div class="center">
-        <img src="/static/images/send.png"/>
+        <img src="{% static 'images/send.png' %}"/>
         <p>我们已经向您的邮箱<span class="green" id="jsEmailToActive">12@13.com</span>发送了邮件，<br/>为保证您的账号安全，请及时验证邮箱</p>
         <p class="a"><a class="btn" id="jsGoToEmail" target="_blank" href="http://mail.qq.com">去邮箱验证</a></p>
         <p class="zy_success upmove"></p>
@@ -40,8 +41,8 @@
             <p class="fl hd-tips">慕学在线网，在线学习平台！</p>
             <ul class="fr hd-bar">
                 <li>服务电话：<span>33333333</span></li>
-                <li class="active"><a href="login.html">[登录]</a></li>
-                <li><a href="register.html">[注册]</a></li>
+                <li class="active"><a href="{% url 'users:login' %}">[登录]</a></li>
+                <li><a href="{% url 'users:register' %}">[注册]</a></li>
             </ul>
         </div>
     </div>
@@ -57,9 +58,9 @@
             <div class="fl slide">
                 <div class="imgslide">
                     <ul class="imgs">
-                            <li><a href=""><img width="483" height="472" src="/static/images/mysql.jpg" /></a></li>
-                            <li><a href=""><img width="483" height="472" src="/static/images/mysql.jpg" /></a></li>
-                            <li><a href=""><img width="483" height="472" src="/static/images/mysql.jpg" /></a></li>
+                            <li><a href=""><img width="483" height="472" src="{% static 'images/mysql.jpg' %}" /></a></li>
+                            <li><a href=""><img width="483" height="472" src="{% static 'images/mysql.jpg' %}" /></a></li>
+                            <li><a href=""><img width="483" height="472" src="{% static 'images/mysql.jpg' %}" /></a></li>
                     </ul>
                 </div>
                 <div class="unslider-arrow prev"></div>
@@ -67,10 +68,10 @@
             </div>
             <div class="fl form-box">
                 <div class="tab">
-                    <h2 class="active">账号登录</h2>
-                    <h2 >动态登录</h2>
+                    <h2 {% if res == 1 %}class="active" {% endif %}>账号登录</h2>
+                    <h2 {% if res == 2 %}class="active" {% endif %}>动态登录</h2>
                 </div>
-                <form class="tab-form" method="post" autocomplete="off" id="form1">
+                <form class="tab-form {% if res == 2 %}hide {% endif %}" method="post" autocomplete="off" id="form1">
                     {% csrf_token %}
                     <div class="form-group marb20 {% if login_form.errors.username %}errorput{% endif %}">
                         <input name="username" id="account_l" value="{{ login_form.data.username }}" type="text" placeholder="手机号/邮箱" />
@@ -78,42 +79,52 @@
                     <div class="form-group marb8 {% if login_form.errors.password %}errorput{% endif %} ">
                         <input name="password" id="password_l" type="password" placeholder="请输入您的密码" />
                     </div>
-                    <div class="error btns login-form-tips" id="jsLoginTips">{% for key, error in login_form.errors.items %}{{ error  }}{% endfor %}{{ errage }}</div>
+                    <div class="error btns login-form-tips" id="jsLoginTips">
+                        {% if res == 1 %}
+                            {% for key, error in login_form.errors.items %}{{ error  }}{% endfor %}
+                        {% endif %}
+                        {{ errage }}
+                    </div>
                      <div class="auto-box marb38">
 						<a class="fr" href="forgetpwd.html">忘记密码？</a>
                      </div>
                      <input class="btn btn-green" id="jsLoginBtn" type="submit" value="立即登录 > " />
                 </form>
-                <form class="tab-form hide" id="mobile_register_form" autocomplete="off" method="post" id="form2">
+                <form class="tab-form {% if res == 2 %}  {% else %} hide {% endif %}" id="mobile_register_form" autocomplete="off" action="{% url 'users:mobilelogin' %}" method="post" id="form2">
                     {% csrf_token %}
-                    <div class="form-group marb20">
-                        <input id="jsRegMobile" name="mobile" type="text" placeholder="请输入您的手机号码">
+                    <div class="form-group marb20 {% if mobile_login_form.errors.mobile %}errorput{% endif %}">
+                        <input id="jsRegMobile" value="{{ mobile_login_form.data.mobile }}" name="mobile" type="text" placeholder="请输入您的手机号码">
                     </div>
-                    <div class="form-group marb20 blur" id="jsRefreshCode">
+                    <div class="form-group marb20 blur " id="jsRefreshCode">
                         {{ login_form.captcha }}
+                        {{ d_mobile_form.captcha }}
                     </div>
                     <div class="clearfix">
-                        <div class="form-group marb8 verify-code">
-                            <input id="jsPhoneRegCaptcha" name="code" type="text" placeholder="输入手机验证码">
+                        <div class="form-group marb8 verify-code {% if mobile_login_form.errors.code %}errorput{% endif %}">
+                            <input id="jsPhoneRegCaptcha" value="{{ mobile_login_form.data.code }}" name="code" type="text" placeholder="输入手机验证码">
                         </div>
                         <input class="verify-code-btn sendcode" id="jsSendCode" value="发送验证码">
                     </div>
-                    <div class="error btns" id="jsMobileTips" style="display: none;">
-
+                    <div class="error btns " id="jsMobileTips">
+                    {% if res == 2  %}
+                        {% for key, val in mobile_login_form.errors.items %}
+                            {{ val }}
+                        {% endfor %}
+                    {% endif %}
                     </div>
                     <div class="auto-box marb8">
                     </div>
                     <input class="btn btn-green" id="jsMobileRegBtn" type="button" value="立即登录">
                 </form>
-                <p class="form-p">没有慕学在线网帐号？<a href="register.html">[立即注册]</a></p>
+                <p class="form-p">没有慕学在线网帐号？<a href="{% url 'users:register' %}">[立即注册]</a></p>
             </div>
         </div>
     </div>
 </section>
-<script src="/static/js/jquery.min.js" type="text/javascript"></script>
-<script src="/static/js/unslider.js" type="text/javascript"></script>
-<script src="/static/js/validateDialog.js"  type="text/javascript"></script>
-<script src="/static/js/login.js"  type="text/javascript"></script>
-<script src="/static/js/login_zjg.js"  type="text/javascript"></script>
+<script src="{% static 'js/jquery.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'js/unslider.js' %}" type="text/javascript"></script>
+<script src="{% static 'js/validateDialog.js' %}"  type="text/javascript"></script>
+<script src="{% static 'js/login.js' %}"  type="text/javascript"></script>
+<script src="{% static 'js/login_zjg.js' %}"  type="text/javascript"></script>
 </body>
 </html>

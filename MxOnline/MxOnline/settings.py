@@ -115,7 +115,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = "users.UserProfile"
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -140,3 +139,9 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 # 云片网设置
 # 发送短信使用的ａｐｉｋｅｙ
 APIKEY = 'dfcdfc5bd61eace635fee2d0b5084b87'
+
+# redis存放手机验证码配置作
+HOST = 'localhost'
+PORT = 6379
+DB = 0
+# REDIS_MOBILE_TEST = {'host': 'localhost', 'port': 6379, 'db': 0}
