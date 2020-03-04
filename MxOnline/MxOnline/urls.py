@@ -19,16 +19,16 @@ from django.views.generic import TemplateView
 from django.conf.urls import url
 from django.views.static import serve
 
-from apps.users import users_urls
-from apps.organization import org_urls
+import apps.users.urls
+import apps.organization.urls
 import xadmin
 from MxOnline.settings import MEDIA_ROOT
 
 urlpatterns = [
     path('xadmin/', xadmin.site.urls),
     path('index/', TemplateView.as_view(template_name='index.html'), name='index'),  # 主页
-    path('users/', include((users_urls, 'users'))),  # 用户模块
-    path('org/', include((org_urls, 'org'))),  # 用户机构模块
+    path('users/', include((apps.users.urls, 'users'))),  # 用户模块
+    path('org/', include((apps.organization.urls, 'org'))),  # 用户机构模块
     url(r'^captcha/', include('captcha.urls')),  # 验证码
-    url(r'^media/(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT})  # media文件路径
+    url(r'^media/(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT})  # 获取media文件
 ]

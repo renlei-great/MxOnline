@@ -53,9 +53,9 @@
 		<div class="layout">
 			<div class="head">
 				<ul class="tab_header">
-					<li class="active"><a href="?ct=&city=">全部</a> </li>
-					<li class=""><a href="?sort=students&ct=&city=">学习人数 &#8595;</a></li>
-					<li class=""><a href="?sort=courses&ct=&city=">课程数 &#8595;</a></li>
+					<li {% if sort == '' %}class="active"{% endif %}><a href="?ct={{ category }}&city={{ city_id }}">全部</a> </li>
+					<li {% if sort == 'students' %}class="active"{% endif %}><a href="?sort=students&ct={{ category }}&city={{ city_id }}">学习人数 &#8595;</a></li>
+					<li {% if sort == 'courses' %}class="active"{% endif %}><a href="?sort=courses&ct={{ category }}&city={{ city_id }}">课程数 &#8595;</a></li>
 				</ul>
 			</div>
 
@@ -106,17 +106,18 @@
 
 		</div>
 		 <div class="pageturn">
+         <!-- 分页 -->
             <ul class="pagelist">
 
-                {% if page.has_previous %}<li class="long"><a href="{% url 'org:org_list' page.previous_page_number %}">上一页</a></li>{% endif %}
+                {% if page.has_previous %}<li class="long"><a href="{% url 'org:org_list'%}?age={{  page.previous_page_number  }}&city={{ city_id }}&ct={{ category }}&sort={{ sort }}">上一页</a></li>{% endif %}
                         {% for index in page_list %}
                             {% if age == index %}
-                                <li class="active"><a href="{% url 'org:org_list' index%}">{{ index }}</a></li>
+                                <li class="active"><a href="{% url 'org:org_list'%}?age={{ index }}&city={{ city_id }}&ct={{ category }}&sort={{ sort }}">{{ index }}</a></li>
                             {% else %}
-                                <li><a href="{% url 'org:org_list' index%}" class="page">{{ index }}</a></li>
+                                <li><a href="{% url 'org:org_list'%}?age={{ index }}&city={{ city_id }}&ct={{ category }}&sort={{ sort }}" class="page">{{ index }}</a></li>
                             {% endif %}
                         {% endfor %}
-                {% if page.has_next %}<li class="long"><a href="{% url 'org:org_list' page.next_page_number%}">下一页</a></li>{% endif %}
+                {% if page.has_next %}<li class="long"><a href="{% url 'org:org_list'%}?age={{ page.next_page_number }}&city={{ city_id }}&ct={{ category }}&sort={{ sort }}">下一页</a></li>{% endif %}
 
             </ul>
         </div>
@@ -125,53 +126,35 @@
 	<div class="right companyright">
 			<div class="head">我要学习</div>
 			<form class="rightform" id="jsStayForm">
-				<div>
+				<div id="div_name" >
                     <img src="{% static 'images/rightform1.png' %}"/>
                     <input type="text" name="name" id="companyName" placeholder="名字" maxlength="25" />
                 </div>
-				<div>
+				<div id="div_mobile">
                     <img src="{% static 'images/rightform2.png' %}"/>
                     <input type="text" name="mobile" id="companyMobile" placeholder="联系电话"/>
                 </div>
-				<div>
+				<div id="div_course_name">
                     <img src="{% static 'images/rightform3.png' %}"/>
                     <input type="text" name="course_name" id="companyAddress" placeholder="课程名" maxlength="50" />
                 </div>
                 <p class="error company-tips" id="jsCompanyTips"></p>
 				<input class="btn" type="text" id="jsStayBtn" value="立即咨询 >" />
+                {% csrf_token %}
             </form>
 		</div>
 
 		<div class="right companyrank layout">
 			<div class="head">授课机构排名</div>
-
-
+            {% for org in hot_orgs %}
                 <dl class="des">
-                    <dt class="num fl">1</dt>
+                    <dt class="num fl">{{ forloop.counter }}</dt>
                     <dd>
-                        <a href="/company/2/"><h1>慕课网</h1></a>
-                        <p>北京市</p>
+                        <a href="/company/2/"><h1>{{ org.name }}</h1></a>
+                        <p>{{ org.address }}</p>
                     </dd>
                 </dl>
-
-                <dl class="des">
-                    <dt class="num fl">2</dt>
-                    <dd>
-                        <a href="/company/2/"><h1>慕课网2</h1></a>
-                        <p>深圳市</p>
-                    </dd>
-                </dl>
-
-                <dl class="des">
-                    <dt class="num fl">3</dt>
-                    <dd>
-                        <a href="/company/2/"><h1>北京大学</h1></a>
-                        <p>北京市</p>
-                    </dd>
-                </dl>
-
-
-
+            {% endfor %}
 
 		</div>
         </div>
@@ -196,6 +179,16 @@
                             alert("提交成功")
                         } else if (data.status == 'fail') {
                             $('#jsCompanyTips').html(data.msg)
+                            if (data.key == 'mobile')
+                            {
+                                $('#div_mobile').addClass('errorput')
+                                $('#div_name').removeClass('errorput')
+                            }
+                            if (data.key == 'name')
+                            {
+                                $('#div_name').addClass('errorput')
+                                $('#div_mobile').removeClass('errorput')
+                            }
                         }
                     },
                 });
