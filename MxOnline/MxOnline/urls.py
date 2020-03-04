@@ -17,10 +17,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
 from django.conf.urls import url
+from django.views.static import serve
 
 from apps.users import users_urls
 from apps.organization import org_urls
 import xadmin
+from MxOnline.settings import MEDIA_ROOT
 
 urlpatterns = [
     path('xadmin/', xadmin.site.urls),
@@ -28,4 +30,5 @@ urlpatterns = [
     path('users/', include((users_urls, 'users'))),  # 用户模块
     path('org/', include((org_urls, 'org'))),  # 用户机构模块
     url(r'^captcha/', include('captcha.urls')),  # 验证码
+    url(r'^media/(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT})  # media文件路径
 ]

@@ -7,7 +7,6 @@ class City(BaseModledb):
     name = models.CharField(max_length=20, verbose_name=u"城市名")
     desc = models.CharField(max_length=200, verbose_name=u"描述")
 
-
     class Meta:
         verbose_name = "城市"
         verbose_name_plural = verbose_name
@@ -29,6 +28,14 @@ class CourseOrg(BaseModledb):
     students = models.IntegerField(default=0, verbose_name="学习人数")
     course_nums = models.IntegerField(default=0, verbose_name="课程数")
     city = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name="所在城市")
+
+    is_auth = models.BooleanField(default=True, verbose_name="是否认证")
+    is_gold = models.BooleanField(default=False, verbose_name="是否金牌")
+
+    # 在models中添加动态属性
+    def course(self):
+        courses = self.course_set.filter(is_classics=True)
+        return courses
 
     class Meta:
         verbose_name = "课程机构"

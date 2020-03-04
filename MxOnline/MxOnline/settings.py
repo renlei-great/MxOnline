@@ -145,3 +145,7 @@ HOST = 'localhost'
 PORT = 6379
 DB = 0
 # REDIS_MOBILE_TEST = {'host': 'localhost', 'port': 6379, 'db': 0}
+
+# 配置media上传路径
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

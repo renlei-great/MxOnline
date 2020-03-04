@@ -8,5 +8,5 @@ from apps.organization.views import OrgListView
 
 
 urlpatterns = [
-    url('^org_list$', OrgListView.as_view(), name='org_list')
+    url('^org_list/(?P<age>\d+)$', OrgListView.as_view(), name='org_list')
 ]
