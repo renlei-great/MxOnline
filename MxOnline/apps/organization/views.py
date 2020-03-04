@@ -12,16 +12,31 @@ class OrgListView(View):
     """课程机构"""
     def get(self, request, age):
         """显示"""
+        print(age)
         # 查询所有机构
         all_org = CourseOrg.objects.all()
         # 查询所有机构的数量
         len_org = CourseOrg.objects.count()
-
         # 查询所有地区
         all_city = City.objects.all()
 
+        # 使用课程类别进行过滤
+        category = request.GET.get('ct', '')  # 获取要筛选的课程类别
+        if not category == '':
+            # 查询数据
+            all_org = all_org.filter(category=category)
+
+        # 使用所在地区进行过滤
+        city_id = request.GET.get('city', '')  # 获取要筛选的课程类别
+        try:
+            if not city_id == '':
+                # 查询数据
+                all_org = all_org.filter(city=int(city_id))
+        except Exception:
+            pass
+
         # 分页
-        p = Paginator(all_org, 1)
+        p = Paginator(all_org, 2)
         page = p.page(age)
         # 校验age是否为数值
         try:
@@ -29,6 +44,7 @@ class OrgListView(View):
         except Exception:
             return HttpResponseRedirect(reverse('org:org_list'))
         number = p.num_pages
+        # 生成一个下面页码的迭代器
         page_list = []
         if number <= 5:  # 总页数小于５
             page_list = range(1, number+1)
@@ -54,6 +70,8 @@ class OrgListView(View):
             'page_list': page_list,
             'age': age,
             'all_city': all_city,
+            'category': category,
+            'city_id': city_id
         }
 
         return render(request, 'org-list.html', countext)
