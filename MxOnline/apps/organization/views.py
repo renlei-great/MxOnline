@@ -30,9 +30,6 @@ class AddAskView(View):
         return JsonResponse({'status': 'success'})
 
 
-
-
-
 # /org/org_list
 class OrgListView(View):
     """课程机构"""
@@ -120,3 +117,45 @@ class OrgListView(View):
         }
 
         return render(request, 'org-list.html', countext)
+
+
+# /org/home
+class DetailHomeView(View):
+    """
+    课程机构－－>机构首页
+    """
+    def get(self, request, org_id):
+        """显示课程机构主页"""
+        # 校验数据
+        try:
+            org_id = int(org_id)
+        except Exception:
+            return HttpResponseRedirect(reverse('org:org_list'))
+
+        # 处理业务
+        # 点击次数加１
+        org = CourseOrg.objects.get(id=org_id)
+        org.click_nums += 1
+        org.save()
+
+        # 全部课程查询,取前四
+        portion_course = org.course_set.all()[:3]
+
+        # 查询全部教师，取一个
+        try:
+            portion_teacher = org.teacher_set.all()[0]
+            teacher_none = False
+        except IndexError:
+            teacher_none = True
+            portion_teacher = None
+
+        # 组织上下文
+        context = {
+            'org': org,
+            'portion_course': portion_course,
+            'portion_teacher': portion_teacher,
+            'teacher_none': teacher_none,
+        }
+
+        # 返回数据
+        return render(request, 'org-detail-homepage.html', context)

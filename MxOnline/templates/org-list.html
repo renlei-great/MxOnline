@@ -62,7 +62,7 @@
             {% for org in page %}
                 <dl class="des difdes">
                     <dt>
-                        <a href="org-detail-homepage.html">
+                        <a href="{% url 'org:home' org.id %}">
                             <img width="200" height="120" class="scrollLoading" data-url="{{ org.image.url }}"/>
                         </a>
                     </dt>
