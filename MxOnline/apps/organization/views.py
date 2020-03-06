@@ -7,6 +7,7 @@ from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 from apps.organization.models import CourseOrg, City
 from apps.courses.models import Course
 from apps.organization.forms import AddAskForm
+from utils.OrgUtils import judge_org_login
 
 
 # /org/add_ask
@@ -157,6 +158,9 @@ class DetailHomeView(View):
             teacher_none = True
             portion_teacher = None
 
+        # 检查用户是否登录，是否关注过此机构
+        judge_collect = judge_org_login(request, org_id)
+
         # 组织上下文
         context = {
             'org': org,
@@ -164,6 +168,7 @@ class DetailHomeView(View):
             'portion_teacher': portion_teacher,
             'teacher_none': teacher_none,
             'active': 'home',
+            'judge_collect': judge_collect,
         }
 
         # 返回数据
@@ -192,11 +197,15 @@ class DetailTeacherView(View):
         # 查出此课程机构下的所有讲师
         teachers = org.teacher_set.all()
 
+        # 检查用户是否登录，是否关注过此机构
+        judge_collect = judge_org_login(request, org_id)
+
         # 组织上下文
         context = {
             'teachers': teachers,
             'active': 'teacher',
-            'org': org
+            'org': org,
+            'judge_collect': judge_collect,
         }
 
         # 返回数据
@@ -236,11 +245,15 @@ class DetailCourseView(View):
 
         pag_course = p.page(page)
 
+        # 检查用户是否登录，是否关注过此机构
+        judge_collect = judge_org_login(request, org_id)
+
         # 组织上下文
         context = {
             'pag_course': pag_course,
             'active': 'course',
             'org': org,
+            'judge_collect': judge_collect,
         }
 
         # 返回数据
@@ -269,5 +282,11 @@ class DetailDescView(View):
         except CourseOrg.DoesNotExist:
             return HttpResponseRedirect(reverse('org:org_list'))
 
+        # 检查用户是否登录，是否关注过此机构
+        judge_collect = judge_org_login(request, org_id)
+
         # 返回数据
-        return render(request, 'org-detail-desc.html', {'org': org})
+        return render(request, 'org-detail-desc.html', {'org': org, 'judge_collect': judge_collect})
+
+
+
