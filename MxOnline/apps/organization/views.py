@@ -2,6 +2,7 @@ from django.shortcuts import render, reverse
 from django.views.generic import View
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect, JsonResponse
+from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 
 from apps.organization.models import CourseOrg, City
 from apps.courses.models import Course
@@ -36,6 +37,9 @@ class OrgListView(View):
 
     def get(self, request):
         """显示"""
+        # 引入以前学的分页模板
+        from django.core.paginator import Paginator
+
         # 查询所有机构
         all_org = CourseOrg.objects.all()
 
@@ -134,12 +138,16 @@ class DetailHomeView(View):
 
         # 处理业务
         # 点击次数加１
-        org = CourseOrg.objects.get(id=org_id)
+        try:
+            org = CourseOrg.objects.get(id=org_id)
+        except CourseOrg.DoesNotExist:
+            return HttpResponseRedirect(reverse('org:org_list'))
+
         org.click_nums += 1
         org.save()
 
         # 全部课程查询,取前四
-        portion_course = org.course_set.all()[:3]
+        portion_course = org.course_set.all()[:4]
 
         # 查询全部教师，取一个
         try:
@@ -155,7 +163,111 @@ class DetailHomeView(View):
             'portion_course': portion_course,
             'portion_teacher': portion_teacher,
             'teacher_none': teacher_none,
+            'active': 'home',
         }
 
         # 返回数据
         return render(request, 'org-detail-homepage.html', context)
+
+
+# /org/teacher
+class DetailTeacherView(View):
+    """
+    课程机构--> 机构讲师
+    """
+    def get(self, request, org_id):
+        """显示机构讲师"""
+        # 校验数据
+        try:
+            org_id = int(org_id)
+        except Exception:
+            return HttpResponseRedirect(reverse('org:org_list'))
+
+        # 处理业务
+        # 查询出课程机构
+        try:
+            org = CourseOrg.objects.get(id=org_id)
+        except CourseOrg.DoesNotExist:
+            return HttpResponseRedirect(reverse('org:org_list'))
+        # 查出此课程机构下的所有讲师
+        teachers = org.teacher_set.all()
+
+        # 组织上下文
+        context = {
+            'teachers': teachers,
+            'active': 'teacher',
+            'org': org
+        }
+
+        # 返回数据
+        return render(request, 'org-detail-teachers.html', context)
+
+
+# /org/course
+class DetailCourseView(View):
+    """
+    课程机构--> 机构课程
+    """
+    def get(self, request, org_id):
+        """机构页显示"""
+        # 校验数据
+        try:
+            org_id = int(org_id)
+        except Exception:
+            return HttpResponseRedirect(reverse('org:org_list'))
+
+        # 处理业务
+        # 查询出课程机构
+        try:
+            org = CourseOrg.objects.get(id=org_id)
+        except CourseOrg.DoesNotExist:
+            return HttpResponseRedirect(reverse('org:org_list'))
+
+        # 此机构下全部课程查询
+        all_course = org.course_set.all()
+
+        # 对前边课程进行分页
+        try:
+            page = request.GET.get('page', 1)
+        except PageNotAnInteger:
+            page = 1
+        # 对课程分页  Paginator(分页集合, per_page=每页显示多少, request=request)
+        p = Paginator(all_course, per_page=1, request=request)
+
+        pag_course = p.page(page)
+
+        # 组织上下文
+        context = {
+            'pag_course': pag_course,
+            'active': 'course',
+            'org': org,
+        }
+
+        # 返回数据
+        return render(request, 'org-detail-course.html', context)
+
+
+# /org/desc
+class DetailDescView(View):
+    """
+    课程机构--> 机构介绍
+    """
+    def get(self, request, org_id):
+        """显示机构介绍
+        render-Prama： org,
+        """
+        # 校验数据
+        try:
+            org_id = int(org_id)
+        except Exception:
+            return HttpResponseRedirect(reverse('org:org_list'))
+
+        # 处理业务
+        # 查询出课程机构
+        try:
+            org = CourseOrg.objects.get(id=org_id)
+        except CourseOrg.DoesNotExist:
+            return HttpResponseRedirect(reverse('org:org_list'))
+
+        # 返回数据
+        return render(request, 'org-detail-desc.html', {'org': org})

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'xadmin.apps.XAdminConfig',
     'DjangoUeditor',
     'captcha',  # 发送验证码的包
+    'pure_pagination',  # 分页
 ]
 
 MIDDLEWARE = [
@@ -149,3 +150,13 @@ DB = 0
 # 配置media上传路径
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# 使用第三方包完成分页的相关配置
+PAGINATION_SETTINGS = {
+    # 省略号中间显示多少个
+    "PAGE_RANGE_DISPLAYED": 2,
+    # 指明前面和后面有多少是连续的
+    'MARGIN_PAGES_DISPLAYED': 1,
+    # 是否显示第一页的链接
+    'SHOW_FIRST_PAGE_WHEN_INVALID': True,
+}
