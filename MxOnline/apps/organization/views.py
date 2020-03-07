@@ -119,6 +119,7 @@ class OrgListView(View):
             'city_id': city_id,
             'sort': sort,
             'hot_orgs': hot_orgs,
+            'active': 'organization'
         }
 
         return render(request, 'org-list.html', countext)

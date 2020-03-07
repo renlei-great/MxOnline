@@ -9,7 +9,7 @@ from utils import OrgUtils
 
 class OpeColView(View):
     """
-    课程机构--> 收藏处理
+    用户相关操作--> 收藏处理
     """
     def post(self, request):
         """机构收藏处理"""

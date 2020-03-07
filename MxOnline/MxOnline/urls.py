@@ -22,6 +22,7 @@ from django.views.static import serve
 import apps.users.urls
 import apps.organization.urls
 import apps.operation.urls
+import apps.courses.urls
 import xadmin
 from MxOnline.settings import MEDIA_ROOT
 
@@ -31,6 +32,7 @@ urlpatterns = [
     path('users/', include((apps.users.urls, 'users'))),  # 用户模块
     path('org/', include((apps.organization.urls, 'org'))),  # 用户机构模块
     path('ope/', include((apps.operation.urls, 'ope'))),  # 用户相关操作模块
+    path('course/', include((apps.courses.urls, 'course'))),  # 课程相关模块
 
     url(r'^captcha/', include('captcha.urls')),  # 验证码
     url(r'^media/(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT})  # 获取media文件
