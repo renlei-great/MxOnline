@@ -34,7 +34,7 @@ class CourseOrg(BaseModledb):
 
     # 在models中添加动态属性
     def course(self):
-        courses = self.course_set.filter(is_classics=True)
+        courses = self.course_set.filter(is_classics=True)[:3]
         return courses
 
     class Meta:

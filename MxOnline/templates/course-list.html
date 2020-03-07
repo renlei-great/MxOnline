@@ -7,7 +7,7 @@
     <section>
         <div class="wp">
             <ul  class="crumbs">
-                <li><a href="index.html">首页</a>></li>
+                <li><a href="{% url 'index' %}">首页</a>></li>
                 <li>公开课</li>
             </ul>
         </div>
@@ -21,9 +21,9 @@
 			<div class="left layout">
 				<div class="head">
 					<ul class="tab_header">
-						<li class="active"><a href="?sort=">最新 </a></li>
-						<li ><a href="?sort=hot">最热门</a></li>
-						<li ><a href="?sort=students">参与人数</a></li>
+						<li {% ifequal sort '' %}class="active"{% endifequal %}><a href="?sort=">最新 </a></li>
+						<li {% ifequal sort 'hot' %}class="active"{% endifequal %}><a href="?sort=hot">最热门</a></li>
+						<li {% ifequal sort 'students' %}class="active"{% endifequal %}><a href="?sort=students">参与人数</a></li>
 					</ul>
 				</div>
                 <div id="inWindow">
@@ -31,18 +31,18 @@
 					<div class="group_list">
                         {% for course in page_course.object_list %}
                             <div class="box">
-                                <a href="course-detail.html">
+                                <a href="{% url 'course:detail' course.id%}">
                                     <img width="280" height="350" class="scrollLoading" src="{{ course.image.url }}"/>
                                 </a>
                                 <div class="des">
-                                    <a href="course-detail.html">
+                                    <a href="{% url 'course:detail' course.id%}">
                                         <h2>{{ course.name }}</h2>
                                     </a>
                                     <span class="fl">时长：<i class="key">{{ course.learn_times }}</i></span>
                                     <span class="fr">学习人数：{{ course.students }}&nbsp;&nbsp;</span>
                                 </div>
                                 <div class="bottom">
-                                    <a href="course-detail.html"><span class="fl">{{ course.course_org }}</span></a>
+                                    <a href="{% url 'course:detail' course.id%}"><span class="fl">{{ course.course_org }}</span></a>
                                     <span class="star fr  notlogin
                                         " data-favid="15">
                                         {{ course.fav_nums }}
@@ -54,7 +54,7 @@
                     <div class="pageturn">
                         <ul class="pagelist">
                             {% if page_course.has_previous %}
-                                <li class="long"><a  href="?{{ page_course.previous_page_number.querystring }}">下一页</a></li>
+                                <li class="long"><a  href="?{{ page_course.previous_page_number.querystring }}">上一页</a></li>
                             {% endif %}
                             {% for page in page_course.pages %}
                                 {% if page %}
@@ -78,45 +78,19 @@
 			<div class="right layout">
 				<div class="head">热门课程推荐</div>
 				<div class="group_recommend">
-
-                    <dl>
+                    {% for course in click_course %}
+                        <dl>
 						<dt>
 							<a target="_blank" href="">
-								<img width="240" height="220" class="scrollLoading" src="../media/courses/2016/11/540e57300001d6d906000338-240-135_n0L8vbw.jpg"/>
+								<img width="240" height="220" class="scrollLoading" src="{{ course.image.url }}"/>
 							</a>
 						</dt>
 						<dd>
-							<a target="_blank" href=""><h2> django与vuejs实战项目2</h2></a>
-							<span class="fl">难度：<i class="key">高级</i></span>
+							<a target="_blank" href=""><h2> {{ course.name }}</h2></a>
+							<span class="fl">难度：<i class="key">{{ course.get_degree_display }}</i></span>
 						</dd>
 					</dl>
-
-                    <dl>
-						<dt>
-							<a target="_blank" href="">
-								<img width="240" height="220" class="scrollLoading" src="../media/courses/2016/12/python面向对象.jpg"/>
-							</a>
-						</dt>
-						<dd>
-							<a target="_blank" href=""><h2> python面向对象</h2></a>
-							<span class="fl">难度：<i class="key">中级</i></span>
-						</dd>
-					</dl>
-
-                    <dl>
-						<dt>
-							<a target="_blank" href="">
-								<img width="240" height="220" class="scrollLoading" src="../media/courses/2016/12/python文件处理.jpg"/>
-							</a>
-						</dt>
-						<dd>
-							<a target="_blank" href=""><h2> python文件处理</h2></a>
-							<span class="fl">难度：<i class="key">中级</i></span>
-						</dd>
-					</dl>
-
-
-
+                    {% endfor %}
 				</div>
 			</div>
 		</div>

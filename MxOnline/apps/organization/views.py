@@ -100,13 +100,6 @@ class OrgListView(View):
         else:
             page_list = range(age - 2, age + 3)
 
-        # 动态添加属性--> 课程机构下的课程
-        for org in page:
-            # 查询每个机构的所有课程
-
-            courses = Course.objects.filter(course_org=org, is_classics=True)[0:3]
-            org.courses = courses
-
             # 组织数据
         countext = {
             'all_org': all_org,
@@ -119,7 +112,6 @@ class OrgListView(View):
             'city_id': city_id,
             'sort': sort,
             'hot_orgs': hot_orgs,
-            'active': 'organization'
         }
 
         return render(request, 'org-list.html', countext)
@@ -160,7 +152,7 @@ class DetailHomeView(View):
             portion_teacher = None
 
         # 检查用户是否登录，是否关注过此机构
-        judge_collect = judge_org_login(request, org_id)
+        judge_collect = judge_org_login(request, org_id, 2)
 
         # 组织上下文
         context = {
@@ -199,7 +191,7 @@ class DetailTeacherView(View):
         teachers = org.teacher_set.all()
 
         # 检查用户是否登录，是否关注过此机构
-        judge_collect = judge_org_login(request, org_id)
+        judge_collect = judge_org_login(request, org_id, 2)
 
         # 组织上下文
         context = {
@@ -247,7 +239,7 @@ class DetailCourseView(View):
         pag_course = p.page(page)
 
         # 检查用户是否登录，是否关注过此机构
-        judge_collect = judge_org_login(request, org_id)
+        judge_collect = judge_org_login(request, org_id, 2)
 
         # 组织上下文
         context = {
@@ -284,7 +276,7 @@ class DetailDescView(View):
             return HttpResponseRedirect(reverse('org:org_list'))
 
         # 检查用户是否登录，是否关注过此机构
-        judge_collect = judge_org_login(request, org_id)
+        judge_collect = judge_org_login(request, org_id, 2)
 
         # 返回数据
         return render(request, 'org-detail-desc.html', {'org': org, 'judge_collect': judge_collect})

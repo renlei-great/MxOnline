@@ -4,7 +4,7 @@ from apps.organization.models import CourseOrg, Teacher
 from apps.courses.models import Course
 
 
-def judge_org_login(request, org_id):
+def judge_org_login(request, fav_id, fav_type):
     """
     检查是否由用户登录，判断是否关注过此机构
     :param request:
@@ -17,10 +17,12 @@ def judge_org_login(request, org_id):
         return False
 
     # 查询用户是否收藏过此机构
-    user_fav = UserFavorite.objects.filter(user=request.user, fav_type=2, fav_id=org_id)
+    user_fav = UserFavorite.objects.filter(user=request.user, fav_type=fav_type, fav_id=fav_id)
     if user_fav:
+        # 收藏过
         return True
     else:
+        # 未收藏
         return False
 
 

@@ -32,7 +32,7 @@ class OpeColView(View):
 
         # 查出当前用户是否收藏过此机构
         try:
-            user_fav = UserFavorite.objects.get(user=user, fav_id=fav_id, fav_type=fav_id)
+            user_fav = UserFavorite.objects.get(user=user, fav_id=fav_id, fav_type=fav_type)
             is_user_fav_col = True
         except UserFavorite.DoesNotExist:
             is_user_fav_col = False
@@ -51,6 +51,6 @@ class OpeColView(View):
             OrgUtils.utils_collect(fav_type, fav_id, 'add')
 
         # 返回数据
-        return JsonResponse({'status': 'success'})
+        return JsonResponse({'status': 'success', 'res': fav_type})
 
 
