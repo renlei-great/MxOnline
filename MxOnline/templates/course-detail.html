@@ -46,7 +46,7 @@
 						</ul>
 						<div class="btns">
 							<div class="btn colectgroupbtn"  id="jsLeftBtn">{% if has_collect_course %}已收藏{% else %}收藏{% endif %}</div>
-                                <div class="buy btn"><a style="color: white" href="course-video.html">开始学习</a></div>
+                            <div class="buy btn"><a style="color: white" href="{% url 'course:lesson' course.id %}?has_reverse=1">开始学习</a></div>
 						</div>
 					</div>
                     <div class="group-share-box">
@@ -76,7 +76,7 @@
                         </a>
                     </div>
 					<a href="{% url 'org:home' org_id %}">
-                        <h2 class="center" title="清华大学">{{ course.course_org.name }}</h2>
+                        <h2 class="center" title="{{ course.course_org.name }}">{{ course.course_org.name }}</h2>
                     </a>
 					<div class="btn  notlogin" data-favid="14" id="jsRightBtn">{% if has_collect_org %}已收藏{% else %}收藏{% endif %}</div>
 					<div class="clear">
@@ -123,19 +123,19 @@
 			<div class="right layout">
 				<div class="head">相关课程推荐</div>
                 <div class="group_recommend">
-
+                    {% for course in tag_courses %}
                         <dl>
                             <dt>
-                                <a target="_blank" href="">
-                                    <img width="240" height="220" class="scrollLoading" src="../media/courses/2016/11/540e57300001d6d906000338-240-135_mvvGYHL.jpg"/>
+                                <a target="_blank" href="{% url 'course:detail' course.id %}">
+                                    <img width="240" height="220" class="scrollLoading" src="{{ course.image.url }}"/>
                                 </a>
                             </dt>
                             <dd>
-                                <a target="_blank" href=""><h2> django实战项目</h2></a>
-                                <span class="fl">学习时长：<i class="key">0</i></span>
+                                <a target="_blank" href="{% url 'course:detail' course.id %}"><h2> {{ course.name }}</h2></a>
+                                <span class="fl">学习时长：<i class="key">{{ course.learn_times }}</i></span>
                             </dd>
                         </dl>
-
+                    {% endfor %}
 
 
                 </div>

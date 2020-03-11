@@ -160,3 +160,6 @@ PAGINATION_SETTINGS = {
     # 是否显示第一页的链接
     'SHOW_FIRST_PAGE_WHEN_INVALID': True,
 }
+
+# 配置登录url地址
+LOGIN_URL = '/users/login'

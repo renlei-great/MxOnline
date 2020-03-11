@@ -2,8 +2,9 @@ from django.shortcuts import render, reverse
 from django.views import View
 from django.http import HttpResponseRedirect, JsonResponse
 
+from apps.operation.forms import CourseCommentForm
 from apps.operation.forms import OpeColForm
-from apps.operation.models import UserFavorite
+from apps.operation.models import UserFavorite, CourseComments
 from utils import OrgUtils
 
 
@@ -11,6 +12,7 @@ class OpeColView(View):
     """
     用户相关操作--> 收藏处理
     """
+
     def post(self, request):
         """机构收藏处理"""
         # 获取用户
@@ -54,3 +56,28 @@ class OpeColView(View):
         return JsonResponse({'status': 'success', 'res': fav_type})
 
 
+class OpeCommentView(View):
+    """
+    公开课--》 开始学习页 --> 评论页提交
+    """
+
+    def post(self, request):
+        """提交评论"""
+
+        # 验证表单数据
+        course_comment_from = CourseCommentForm(request.POST)
+        if course_comment_from.is_valid():
+            # 获取数据
+            course = course_comment_from.cleaned_data['course']  # 这里直接返回了课程对象
+            comment = course_comment_from.cleaned_data['comments']
+            # 获取到评论模板对象进行赋值
+            comments = CourseComments()
+            comments.user = request.user
+            comments.comments = comment
+            comments.course = course
+            comments.save()
+
+            # 返回数据
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'fail', 'msg': '参数错误'})

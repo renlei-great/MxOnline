@@ -11,6 +11,7 @@ class Course(BaseModledb):
     course_org = models.ForeignKey(CourseOrg, on_delete=models.CASCADE, null=True, blank=True, verbose_name="课程机构")
     name = models.CharField(verbose_name="课程名", max_length=50)
     desc = models.CharField(verbose_name="课程描述", max_length=300)
+    notice = models.CharField(verbose_name="课程公告", max_length=300, default="")
     learn_times = models.IntegerField(default=0, verbose_name="学习时长(分钟数)")
     degree = models.CharField(verbose_name="难度", choices=(("cj", "初级"), ("zj", "中级"), ("gj", "高级")), max_length=2)
     students = models.IntegerField(default=0, verbose_name='学习人数')
@@ -31,6 +32,18 @@ class Course(BaseModledb):
 
     def __str__(self):
         return self.name
+
+
+class CourseTag(BaseModledb):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE,  verbose_name='课程')
+    tag = models.CharField(max_length=100, verbose_name='章节名')
+
+    class Meta:
+        verbose_name = "课程标签"
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.tag
 
 
 class Lesson(BaseModledb):

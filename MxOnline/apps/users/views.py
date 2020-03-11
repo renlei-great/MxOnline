@@ -85,8 +85,15 @@ class MobileLoginView(View):
         # 记住用户登录状态
         login(request, user)
 
-        # 返回数据：进入首页
-        return redirect(reverse('index'))
+        # 登录成功删除用户刚才的验证码
+        r = redis.Redis()
+        r.delete(mobile)
+
+        # 获取用户来前的页面
+        url_next = request.GET.get('next', reverse('index'))
+
+        # 返回首页
+        return redirect(url_next)
 
 
 # /users/send_sms/
@@ -144,7 +151,9 @@ class LoginView(View):
             return redirect(reverse('index'))
         login_form = CaptchaForm(request.POST)
 
-        return render(request, 'login.html', {'login_form': login_form})
+        next = request.GET.get('next', '')
+
+        return render(request, 'login.html', {'login_form': login_form, 'next': next})
 
     def post(self, request):
         """登录请求"""
@@ -166,8 +175,11 @@ class LoginView(View):
                 # 记住用户登录状态
                 login(request, user)
 
+                # 获取用户来前的页面
+                url_next = request.GET.get('next', reverse('index'))
+
                 # 返回首页
-                return redirect(reverse('index'))
+                return redirect(url_next)
 
             else:  # 密码不正确
                 return render(request, 'login.html', {'errage': '用户名或密码不正确', 'login_form': login_form})

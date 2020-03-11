@@ -1,10 +1,10 @@
 from django.conf.urls import url
 
-from apps.operation.views import OpeColView
+from apps.operation.views import OpeColView, OpeCommentView
 
 
 urlpatterns = [
-    # url('^org_list/$', OrgListView.as_view(), name='org_list'),  # 课程机构列表页
     url('^col/$', OpeColView.as_view(), name='col'),  # 机构收藏处理
+    url('^comment/$', OpeCommentView.as_view(), name='comment'),  # 提交评论处理
 ]
 

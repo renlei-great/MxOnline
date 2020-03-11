@@ -90,7 +90,7 @@
                      </div>
                      <input class="btn btn-green" id="jsLoginBtn" type="submit" value="立即登录 > " />
                 </form>
-                <form class="tab-form {% if res == 2 %}  {% else %} hide {% endif %}" id="mobile_register_form" autocomplete="off" action="{% url 'users:mobilelogin' %}" method="post" id="form2">
+                <form class="tab-form {% if res == 2 %}  {% else %} hide {% endif %}" id="mobile_register_form" autocomplete="off"{% if not next == '' %} action="{% url 'users:mobilelogin' %}?next={{ next }}{% else %}action="{% url 'users:mobilelogin' %}{% endif %}" method="post" id="form2">
                     {% csrf_token %}
                     <div class="form-group marb20 {% if mobile_login_form.errors.mobile %}errorput{% endif %}">
                         <input id="jsRegMobile" value="{{ mobile_login_form.data.mobile }}" name="mobile" type="text" placeholder="请输入您的手机号码">
