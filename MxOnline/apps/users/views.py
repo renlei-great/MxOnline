@@ -4,11 +4,75 @@ from django.contrib.auth import authenticate, login, logout
 from django.http.response import HttpResponseRedirect, JsonResponse
 # from django.urls import reverse
 import redis
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-from apps.users.forms import LoginForm, CaptchaForm, MobileLoginForm, RegisterForm, RegisterPostForm
+from apps.users.forms import LoginForm, CaptchaForm, MobileLoginForm, RegisterForm, RegisterPostForm, UploadImageForm, UploadInfoForm, UpdatePwsForm
 from MxOnline.settings import APIKEY
 from utils import RandomStr, YunPian
 from apps.users.models import UserProfile
+
+
+# /users/update_pwd
+class UpdatePwdView(LoginRequiredMixin, View):
+    """修改密码"""
+    def post(self, request):
+        """处理修改密码请求"""
+        login_url = '/users/login'
+        update_pwd_form = UpdatePwsForm(request.POST)
+        if update_pwd_form.is_valid():
+            pwd = request.POST.get('password1', "")
+            user = request.user
+            user.set_password(pwd)
+            user.save()
+            return JsonResponse({
+                'status': 'success'
+            })
+        else:
+            return JsonResponse(update_pwd_form.errors)
+
+
+# /users/upload_info
+class UploadInfoView(LoginRequiredMixin, View):
+    """个人资料"""
+    def post(self,request):
+        """修改个人资料"""
+        login_url = '/users/login'
+        # 交给forms处理表单数据
+        upload_info_form = UploadInfoForm(request.POST, instance=request.user)
+        if upload_info_form.is_valid():
+            upload_info_form.save()
+            return JsonResponse({
+                'status': 'success'
+            })
+        else:
+            return JsonResponse(upload_info_form.errors)
+
+
+# /users/upload_image
+class UploadImageView(LoginRequiredMixin, View):
+    """头像操作"""
+    login_url = '/users/login'
+    def post(self, request):
+        """修改头像"""
+        # 使用forms表单上传头像
+        upload_image_form = UploadImageForm(request.POST, request.FILES, instance=request.user)
+        if upload_image_form.is_valid():
+            upload_image_form.save()
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({"status": 'fail'})
+
+
+# /users/user_info
+class UserInfoView(LoginRequiredMixin, View):
+    """
+    个人中心 --> 个人资料
+    """
+    login_url = '/users/login'
+
+    def get(self, request):
+        """个人资料显示"""
+        return render(request, 'usercenter-info.html')
 
 
 # /users/register

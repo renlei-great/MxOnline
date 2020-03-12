@@ -9,5 +9,7 @@ urlpatterns = [
     url(r'^lesson/(?P<course_id>\d+)$', CourseLessonView.as_view(), name='lesson'),  # 开始学习页显示
     url(r'^comment/(?P<course_id>\d+)$', CourseCommentView.as_view(), name='comment'),  # 开始学习评论页显示
     url(r'^play/(?P<course_id>\d+)/(?P<video_id>\d+)$', VideoView.as_view(), name='play'),  # 开始学习视屏页显示
+
+
 ]
 

@@ -1,0 +1,202 @@
+{% extends 'usercenter-base.html' %}
+{% load staticfiles %}
+
+{% block title %}我的收藏- 慕学在线网{% endblock title %}
+
+{% block custom_bread %}
+   <section>
+        <div class="wp">
+            <ul  class="crumbs">
+                <li><a href="{% url 'index' %}">首页</a>></li>
+                <li><a href="{% url 'users:user_info' %}">个人中心</a>></li>
+                <li>我的收藏</li>
+            </ul>
+        </div>
+    </section>
+{% endblock custom_bread %}
+
+
+{% block custom_body_right %}
+    <div class="right" >
+            <div class="personal_des Releasecont">
+                <div class="head">
+                    <h1>我的收藏</h1>
+                </div>
+            </div>
+            <div class="personal_des permessage">
+                <div class="head">
+                    <ul class="tab_header messagehead">
+                        <li><a href="usercenter-fav-course.html">课程机构</a> </li>
+                        <li><a href="usercenter-fav-teacher.html">授课教师 </a></li>
+                        <li class="active"><a href="usercenter-fav-course.html">公开课程</a></li>
+                    </ul>
+
+                </div>
+                <div class="companycenter">
+                    <div class="group_list brief">
+
+                        <div class="module1_5 box">
+                            <a href="course-detail.html">
+                                <img width="214" height="190" src="../media/courses/2016/12/57035ff200014b8a06000338-240-135_dHfj8Nq.jpg"/>
+                            </a>
+                            <div class="des">
+                                <a href="course-detail.html"><h2>scrapy教程</h2></a>
+                                <span class="fl">时长：<i class="key">55</i></span>
+                                <span class="fr">学习人数：0</span>
+                            </div>
+                            <div class="bottom">
+                                <span class="fl">北京大学</span>
+                                <span class="delete-group fr jsDeleteFav_course" data-favid="12"></span>
+                            </div>
+                        </div>
+
+                        <div class="module1_5 box">
+                            <a href="course-detail.html">
+                                <img width="214" height="190" src="../media/courses/2016/12/mysql.jpg"/>
+                            </a>
+                            <div class="des">
+                                <a href="course-detail.html"><h2>xadmin进阶开发</h2></a>
+                                <span class="fl">时长：<i class="key">30</i></span>
+                                <span class="fr">学习人数：2</span>
+                            </div>
+                            <div class="bottom">
+                                <span class="fl">慕课网</span>
+                                <span class="delete-group fr jsDeleteFav_course" data-favid="13"></span>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock custom_body_right %}
+
+{% block custom_js %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.jsDeleteFav_course').on('click', function () {
+            var _this = $(this),
+                favid = _this.attr('data-favid');
+            alert(favid)
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url: "/org/add_fav/",
+                data: {
+                    fav_type: 1,
+                    fav_id: favid,
+                    csrfmiddlewaretoken: '799Y6iPeEDNSGvrTu3noBrO4MBLv6enY'
+                },
+                async: true,
+                success: function (data) {
+                    Dml.fun.winReload();
+                }
+            });
+        });
+    });
+    $(document).ready(function() {
+        $('.jsDeleteFav_teacher').on('click', function () {
+            var _this = $(this),
+                favid = _this.attr('data-favid');
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url: "/org/add_fav/",
+                data: {
+                    fav_type: 3,
+                    fav_id: favid,
+                    csrfmiddlewaretoken: '799Y6iPeEDNSGvrTu3noBrO4MBLv6enY'
+                },
+                async: true,
+                success: function (data) {
+                    Dml.fun.winReload();
+                }
+            });
+        });
+    });
+
+    $(document).ready(function() {
+        $('.jsDeleteFav_org').on('click', function () {
+            var _this = $(this),
+                favid = _this.attr('data-favid');
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url: "/org/add_fav/",
+                data: {
+                    fav_type: 2,
+                    fav_id: favid,
+                    csrfmiddlewaretoken: '799Y6iPeEDNSGvrTu3noBrO4MBLv6enY'
+                },
+                async: true,
+                success: function (data) {
+                    Dml.fun.winReload();
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+        var shareUrl = '',
+            shareText = '',
+            shareDesc = '',
+            shareComment = '';
+        $(function () {
+            $(".bdsharebuttonbox a").mouseover(function () {
+                var type = $(this).attr('data-cmd'),
+                    $parent = $(this).parent('.bdsharebuttonbox'),
+                    fxurl = $parent.attr('data-url'),
+                    fxtext = $parent.attr('data-text'),
+                    fxdesc = $parent.attr('data-desc'),
+                    fxcomment = $parent.attr('data-comment');
+                switch (type){
+                    case 'tsina':
+                    case 'tqq':
+                    case 'renren':
+                            shareUrl = fxurl;
+                            shareText = fxdesc;
+                            shareDesc = '';
+                            shareComment = '';
+                        break;
+                    default :
+                            shareUrl = fxurl;
+                            shareText = fxtext;
+                            shareDesc = fxdesc;
+                            shareComment = fxcomment;
+                        break;
+                }
+            });
+        });
+        function SetShareUrl(cmd, config) {
+            if (shareUrl) {
+                config.bdUrl = "" + shareUrl;
+            }
+            if(shareText){
+                config.bdText = shareText;
+            }
+            if(shareDesc){
+                config.bdDesc = shareDesc;
+            }
+            if(shareComment){
+                config.bdComment = shareComment;
+            }
+
+            return config;
+        }
+        window._bd_share_config = {
+            "common": {
+                "onBeforeClick":SetShareUrl,
+                "bdPic":"",
+                "bdMini":"2",
+                "searchPic":"1",
+                "bdMiniList":false
+            },
+            "share": {
+                "bdSize":"16"
+            }
+        };
+    with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com../api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+{% endblock custom_js %}

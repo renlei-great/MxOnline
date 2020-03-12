@@ -5,6 +5,32 @@ import redis
 from apps.users.models import UserProfile
 
 
+class UpdatePwsForm(forms.Form):
+    password1 = forms.CharField(min_length=7, required=True, max_length=20)
+    password2 = forms.CharField(min_length=7, required=True, max_length=20)
+
+    def clean(self):
+        pwd1 = self.cleaned_data.get('password1', '1')
+        pwd2 = self.cleaned_data.get('password2', '2')
+
+        if pwd2 != pwd1:
+            raise forms.ValidationError('两次密码不一致')
+
+        return self.cleaned_data
+
+
+class UploadInfoForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['nick_name', 'birthday', 'gender', 'address']
+
+
+class UploadImageForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['image']
+
+
 class RegisterPostForm(forms.Form):
     mobile = forms.CharField(max_length=11, required=True)
     code = forms.CharField(min_length=4, max_length=4, required=True)
