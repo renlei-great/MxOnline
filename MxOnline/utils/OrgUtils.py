@@ -6,7 +6,7 @@ from apps.courses.models import Course
 
 def judge_org_login(request, fav_id, fav_type):
     """
-    检查是否由用户登录，判断是否关注过此机构
+    检查用户是否登录，判断是否关注过此机构
     :param request:
     :param org_id:
     :return:

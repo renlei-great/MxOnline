@@ -4,10 +4,92 @@ from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect, JsonResponse
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 
-from apps.organization.models import CourseOrg, City
+from apps.organization.models import CourseOrg, City, Teacher
 from apps.courses.models import Course
 from apps.organization.forms import AddAskForm
 from utils.OrgUtils import judge_org_login
+
+
+# /org/teacher_detail
+class TeacherDetailView(View):
+    """
+    授课讲师 --> 详情页
+    """
+    def get(self, request, teacher_id):
+        """详情页显示"""
+        # 查询出此教师
+        try:
+            teacher = Teacher.objects.get(id=int(teacher_id))
+        except Exception:
+            return HttpResponseRedirect(reverse('org:teacher_list'))
+
+        # 讲师排行傍
+        order_all_teacher = Teacher.objects.all().order_by('-work_years')[:5]
+
+        # 查询出此教师所属的机构
+        org = teacher.org
+
+        # 查询此教师下的所有课程
+        teacher_all_course = teacher.course_set.all()
+
+        # 使用自定义工具查看用户时候收藏过当前机构和课程
+        has_collect_teacher = judge_org_login(request, teacher.id, 3)
+        has_collect_org = judge_org_login(request, org.id, 2)
+
+        # 组织模板上下文
+        context = {
+            "org": org,
+            'order_all_teacher': order_all_teacher,
+            'teacher': teacher,
+            'teacher_all_course': teacher_all_course,
+            'has_collect_org': has_collect_org,
+            'has_collect_teacher': has_collect_teacher,
+        }
+
+        # 返回数据
+        return render(request, 'teacher-detail.html', context)
+
+
+# /org/teacher_list
+class TeacherListView(View):
+    """
+    授课教师 --> 列表页
+    """
+    def get(self, request):
+        """列表页显示"""
+        # 查询出所有教师
+        all_teacher = Teacher.objects.all()
+        # 查询共有多少教师
+        all_teacher_num = all_teacher.count()
+        # 使用什么字段进行排序
+        sort = request.GET.get('sort', "")
+
+        if sort == 'hot':
+            all_teacher = all_teacher.order_by('-click_nums')
+
+        # 对所有教师进行分页
+        try:
+            page = request.GET.get('page', 1)
+        except PageNotAnInteger:
+            page = 1
+        # 创建paginator对象对教师进行分页
+        p = Paginator(all_teacher, per_page=1, request=request)
+        page_teacher = p.page(page)
+
+        # 根据点击数对讲师进行排序
+        order_all_teacher = all_teacher.order_by('-work_years')[:5]
+
+        # 组织模板上下文
+        context = {
+            'page_teacher': page_teacher,
+            'order_all_teacher': order_all_teacher,
+            'all_teacher_num': all_teacher_num,
+            'page': page,
+            'sort': sort,
+        }
+
+        # 返回数据
+        return render(request, 'teachers-list.html', context)
 
 
 # /org/add_ask
@@ -280,6 +362,10 @@ class DetailDescView(View):
 
         # 返回数据
         return render(request, 'org-detail-desc.html', {'org': org, 'judge_collect': judge_collect})
+
+
+
+
 
 
 

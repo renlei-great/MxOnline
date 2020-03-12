@@ -73,7 +73,6 @@ class VideoView(LoginRequiredMixin, View):
         return render(request, 'course-play.html', context)
 
 
-
 class CourseCommentView(LoginRequiredMixin, View):
     """
     公开课--》 开始学习页 --> 评论页
@@ -191,8 +190,6 @@ class CourseLessonView(LoginRequiredMixin, View):
             return render(request, 'course-video.html', context)
         else:
             return render(request, 'course-play.html', context)
-
-
 
 
 class CourseListView(View):

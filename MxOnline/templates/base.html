@@ -83,8 +83,8 @@
 						<ul>
 							<li {% ifequal request.path|slice:'6' '/index' %}class="active"{% endifequal %} ><a href="{% url 'index' %}">首页</a></li>
 							<li {% ifequal request.path|slice:'7' '/course' %}class="active"{% endifequal %} ><a href="{% url 'course:list' %}">公开课<img class="hot" src="{% static 'images/nav_hot.png' %}"></a></li>
-							<li ><a href="teachers-list.html">授课教师</a></li>
-							<li {% ifequal request.path|slice:'4' '/org' %}class="active"{% endifequal %} ><a href="{% url 'org:org_list' %}">授课机构</a></li>
+							<li {% ifequal request.path|slice:'12' '/org/teacher' %}class="active"{% endifequal %} ><a href="{% url 'org:teacher_list' %}">授课教师</a></li>
+							<li {% if request.path|slice:'12' != '/org/teacher' %}{% ifequal request.path|slice:'4' '/org' %}class="active"{% endifequal %} {% endif %}><a href="{% url 'org:org_list' %}">授课机构</a></li>
 						</ul>
 					</div>
 				</div>
