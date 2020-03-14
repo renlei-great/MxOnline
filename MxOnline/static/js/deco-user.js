@@ -90,7 +90,7 @@ function changePhoneSubmit($btn){
         cache: false,
         type: 'post',
         dataType:'json',
-        url:"/users/update/mobile/",
+        url:"/users/update_mobile",
         data:$('#jsChangePhoneForm').serialize(),
         beforeSend:function(XMLHttpRequest){
             $btn.val("发送中...");
@@ -101,7 +101,7 @@ function changePhoneSubmit($btn){
             refresh_captcha({"data":{"form_id":"jsChangePhoneForm"}});
             if(data.mobile){
                 Dml.fun.showValidateError($('#jsChangePhoneCode'), data.mobile);
-            }else if(data.mobile_code){
+            }else if(data.code){
                 Dml.fun.showValidateError($('#jsChangePhoneCode'), data.mobile_code);
             }else if(data.captcha){
                 Dml.fun.showValidateError($('#jsChangePhone'), data.captcha);
@@ -135,12 +135,13 @@ function sendCodeChangePhone($btn){
         cache: false,
         type: 'post',
         dataType:'json',
-        url:"/send_sms/",
+        url:"/users/send_sms/",
         // data:$('#jsChangePhoneForm').serialize(),
         data:{
                 mobile:$("#jsChangePhone").val(),
                 captcha_1:$("#id_captcha_1").val(),
                 captcha_0:$('#id_captcha_0').val(),
+                'csrfmiddlewaretoken': 'm4mt3iJuws1TyIAzvO8ow3Vb3ju4DuNtvqMm8kXUxfUlphbdlxXnXYt1NSM34XwP',
         },
         beforeSend:function(XMLHttpRequest){
             $btn.val("发送中...");

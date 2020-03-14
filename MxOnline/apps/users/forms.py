@@ -77,6 +77,11 @@ class RegisterPostForm(forms.Form):
     #     return errors
 
 
+class UpdateMobileForm(forms.Form):
+    """修改手机号"""
+    captcha = CaptchaField()
+
+
 class RegisterForm(forms.Form):
     captcha = CaptchaField()
 

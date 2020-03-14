@@ -4,6 +4,7 @@ from django.conf.urls import url
 from django.views.generic import View
 
 from apps.users.views import LoginView, LogoutView, SendSmsView, MobileLoginView, RegisterView, UserInfoView, UploadImageView, UploadInfoView, UpdatePwdView
+from apps.users.views import UpdateMobileView
 
 
 urlpatterns = [
@@ -16,6 +17,7 @@ urlpatterns = [
     url(r'^user_info$', UserInfoView.as_view(), name='user_info'),  # 个人中心-个人资料
     url(r'^upload_image$', UploadImageView.as_view(), name='upload_image'),  # 个人中心-个人资料-修改头像
     url(r'^upload_info$', UploadInfoView.as_view(), name='upload_info'),  # 个人中心-个人资料修改
-    url(r'^update_pwd$', UpdatePwdView.as_view(), name='update_pwd'),  # 个人中心-个人资料修改
+    url(r'^update_pwd$', UpdatePwdView.as_view(), name='update_pwd'),  # 个人中心-个人资料密码修改
+    url(r'^update_mobile$', UpdateMobileView.as_view(), name='update_mobile')  # 个人中心-个人资料手机号修改
 
 ]

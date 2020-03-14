@@ -6,10 +6,37 @@ from django.http.response import HttpResponseRedirect, JsonResponse
 import redis
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from apps.users.forms import LoginForm, CaptchaForm, MobileLoginForm, RegisterForm, RegisterPostForm, UploadImageForm, UploadInfoForm, UpdatePwsForm
+from apps.users.forms import LoginForm, CaptchaForm, MobileLoginForm, RegisterForm, RegisterPostForm, UploadImageForm, UploadInfoForm, UpdatePwsForm, UpdateMobileForm
 from MxOnline.settings import APIKEY
 from utils import RandomStr, YunPian
 from apps.users.models import UserProfile
+
+
+#  /users/update_mobile
+class UpdateMobileView(View):
+    """修改手机号"""
+    def post(self, request):
+        """处理请求"""
+        # 表单处理数据
+        update_mobile_form = MobileLoginForm(request.POST)
+        if not update_mobile_form.is_valid():
+            return JsonResponse(update_mobile_form.errors)
+        mobile = update_mobile_form.cleaned_data['mobile']
+        if UserProfile.objects.filter(mobile=mobile):
+            return JsonResponse({
+                'mobile': '该手机号码已注册'
+            })
+        # 修改手机号码
+        user = request.user
+        user.mobile = mobile
+        user.username = mobile
+        user.save()
+
+        # 返回数据
+        return JsonResponse({
+            'status': 'success'
+        })
+
 
 
 # /users/update_pwd
@@ -72,7 +99,8 @@ class UserInfoView(LoginRequiredMixin, View):
 
     def get(self, request):
         """个人资料显示"""
-        return render(request, 'usercenter-info.html')
+        mobile_form = UpdateMobileForm(request.POST)
+        return render(request, 'usercenter-info.html', {'mobile_form': mobile_form})
 
 
 # /users/register
