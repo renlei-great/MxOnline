@@ -74,6 +74,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'apps.users.views.message_num'  # 全局变量未读消息数量
             ],
         },
     },
@@ -161,5 +162,5 @@ PAGINATION_SETTINGS = {
     'SHOW_FIRST_PAGE_WHEN_INVALID': True,
 }
 
-# 配置登录url地址
+# 配置进入需要登录的页面所要跳转的页面
 LOGIN_URL = '/users/login'

@@ -22,6 +22,7 @@ class Course(BaseModledb):
     youneed_know = models.CharField(default="", max_length=300, verbose_name="课程须知")
     teacher_tell = models.CharField(default="", max_length=300, verbose_name="老师告诉你")
     detail = models.TextField(verbose_name="课程详情")
+    is_banner = models.BooleanField(default=False, verbose_name='是否广告')
     image = models.ImageField(upload_to="courses/%Y/%m", verbose_name="封面图", max_length=100)
 
     is_classics = models.BooleanField(default=True, verbose_name="是否经典")

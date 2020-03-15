@@ -27,189 +27,42 @@
             <div class="personal_des permessage">
                 <div class="head">
                     <ul class="tab_header messagehead">
-                        <li class="active"><a href="usercenter-fav-course.html">课程机构</a> </li>
-                        <li><a href="usercenter-fav-teacher.html">授课教师 </a></li>
-                        <li><a href="usercenter-fav-course.html">公开课程</a></li>
+                        <li {% if active == 'fav_org' %}class="active"{% endif %}><a href="{% url 'users:fav_org' %}">课程机构</a> </li>
+                        <li {% if active == 'fav_teacher' %}class="active"{% endif %}><a href="{% url 'users:fav_teacher' %}">授课教师 </a></li>
+                        <li {% if active == 'fav_course' %}class="active"{% endif %}><a href="{% url 'users:fav_course' %}">公开课程</a></li>
                     </ul>
                 </div>
                 <div class="messagelist">
 
+                    {% for org in org_list %}
                     <div class="messages butler_list company company-fav-box">
                         <dl class="des fr">
                             <dt>
-                                <a href="org-detail-homepage.html">
-                                    <img width="160" height="90" src="../media/org/2016/11/imooc.png"/>
+                                <a href="{% url 'org:home' org.id %}">
+                                    <img width="160" height="90" src="{{ org.image.url }}"/>
                                 </a>
                             </dt>
                             <dd>
-                                <h1><a href="org-detail-homepage.html">慕课网</a></h1>
+                                <h1><a href="org-detail-homepage.html">{{ org.name }}</a></h1>
                                 <div class="pic fl" style="width:auto;">
+                                    {% if org.is_auth %}
+                                    <img src="{% static '/images/authentication.png' %}"/>
+                                    {% endif %}
 
-                                    <img src="../images/authentication.png"/>
-
-
-                                    <img src="../images/gold.png"/>
+                                    {% if org.is_gold %}
+                                    <img src="{% static '/images/gold.png' %}"/>
+                                    {% endif %}
 
                                 </div>
-                                <span class="c8 clear">北京市</span>
-                                <div class="delete jsDeleteFav_org" data-favid="1"></div>
+                                <span class="c8 clear">{{ org.address }}</span>
+                                <div class="delete jsDeleteFav_org" data-favid="{{ org.id }}"></div>
                             </dd>
                         </dl>
                     </div>
-
-                    <div class="messages butler_list company company-fav-box">
-                        <dl class="des fr">
-                            <dt>
-                                <a href="org-detail-homepage.html">
-                                    <img width="160" height="90" src="../media/org/2016/11/bjdx.jpg"/>
-                                </a>
-                            </dt>
-                            <dd>
-                                <h1><a href="org-detail-homepage.html">北京大学</a></h1>
-                                <div class="pic fl" style="width:auto;">
-
-                                    <img src="../images/authentication.png"/>
-
-
-                                    <img src="../images/gold.png"/>
-
-                                </div>
-                                <span class="c8 clear">北京市</span>
-                                <div class="delete jsDeleteFav_org" data-favid="2"></div>
-                            </dd>
-                        </dl>
-                    </div>
+                    {% endfor %}
 
                 </div>
             </div>
         </div>
 {% endblock custom_body_right %}
 
-{% block custom_js %}
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('.jsDeleteFav_course').on('click', function () {
-            var _this = $(this),
-                favid = _this.attr('data-favid');
-            alert(favid)
-            $.ajax({
-                cache: false,
-                type: "POST",
-                url: "/org/add_fav/",
-                data: {
-                    fav_type: 1,
-                    fav_id: favid,
-                    csrfmiddlewaretoken: '799Y6iPeEDNSGvrTu3noBrO4MBLv6enY'
-                },
-                async: true,
-                success: function (data) {
-                    Dml.fun.winReload();
-                }
-            });
-        });
-    });
-    $(document).ready(function() {
-        $('.jsDeleteFav_teacher').on('click', function () {
-            var _this = $(this),
-                favid = _this.attr('data-favid');
-            $.ajax({
-                cache: false,
-                type: "POST",
-                url: "/org/add_fav/",
-                data: {
-                    fav_type: 3,
-                    fav_id: favid,
-                    csrfmiddlewaretoken: '799Y6iPeEDNSGvrTu3noBrO4MBLv6enY'
-                },
-                async: true,
-                success: function (data) {
-                    Dml.fun.winReload();
-                }
-            });
-        });
-    });
-
-    $(document).ready(function() {
-        $('.jsDeleteFav_org').on('click', function () {
-            var _this = $(this),
-                favid = _this.attr('data-favid');
-            $.ajax({
-                cache: false,
-                type: "POST",
-                url: "/org/add_fav/",
-                data: {
-                    fav_type: 2,
-                    fav_id: favid,
-                    csrfmiddlewaretoken: '799Y6iPeEDNSGvrTu3noBrO4MBLv6enY'
-                },
-                async: true,
-                success: function (data) {
-                    Dml.fun.winReload();
-                }
-            });
-        });
-    });
-</script>
-
-<script>
-        var shareUrl = '',
-            shareText = '',
-            shareDesc = '',
-            shareComment = '';
-        $(function () {
-            $(".bdsharebuttonbox a").mouseover(function () {
-                var type = $(this).attr('data-cmd'),
-                    $parent = $(this).parent('.bdsharebuttonbox'),
-                    fxurl = $parent.attr('data-url'),
-                    fxtext = $parent.attr('data-text'),
-                    fxdesc = $parent.attr('data-desc'),
-                    fxcomment = $parent.attr('data-comment');
-                switch (type){
-                    case 'tsina':
-                    case 'tqq':
-                    case 'renren':
-                            shareUrl = fxurl;
-                            shareText = fxdesc;
-                            shareDesc = '';
-                            shareComment = '';
-                        break;
-                    default :
-                            shareUrl = fxurl;
-                            shareText = fxtext;
-                            shareDesc = fxdesc;
-                            shareComment = fxcomment;
-                        break;
-                }
-            });
-        });
-        function SetShareUrl(cmd, config) {
-            if (shareUrl) {
-                config.bdUrl = "" + shareUrl;
-            }
-            if(shareText){
-                config.bdText = shareText;
-            }
-            if(shareDesc){
-                config.bdDesc = shareDesc;
-            }
-            if(shareComment){
-                config.bdComment = shareComment;
-            }
-
-            return config;
-        }
-        window._bd_share_config = {
-            "common": {
-                "onBeforeClick":SetShareUrl,
-                "bdPic":"",
-                "bdMini":"2",
-                "searchPic":"1",
-                "bdMiniList":false
-            },
-            "share": {
-                "bdSize":"16"
-            }
-        };
-    with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com../api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
-</script>
-{% endblock custom_js %}

@@ -27,7 +27,7 @@
 					<div class="fl"><p>服务电话：<b>33333333</b></p></div>
 					<!--登录后跳转-->
 
-						{% if user.is_authenticated %}
+                        {% if user.is_authenticated %}
                             <div class="personal">
                                 <dl class="user fr">
                                     <dd>{% if user.nick_name %}{{ user.nick_name }}{% else %}{{ user.username }}{% endif %}<img class="down fr" src="{% static 'images/top_down.png' %}"/></dd>
@@ -47,6 +47,9 @@
                                     </div>
                                 </div>
                             </div>
+                            <a href="{% url 'users:massage' %}">
+                            <div class="msg-num"><span id="MsgNum">{{ message_read_num }}</span></div>
+                            </a>
                         {% else %}
                              <a style="color:white" class="fr registerbtn" href="/register">注册</a>
                              <a style="color:white" class="fr loginbtn" href="{% url "users:login" %}">登录</a>

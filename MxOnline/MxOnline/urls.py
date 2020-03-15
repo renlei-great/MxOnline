@@ -23,12 +23,13 @@ import apps.users.urls
 import apps.organization.urls
 import apps.operation.urls
 import apps.courses.urls
+from apps.users.views import IndexView
 import xadmin
 from MxOnline.settings import MEDIA_ROOT
 
 urlpatterns = [
     path('xadmin/', xadmin.site.urls),
-    path('index/', TemplateView.as_view(template_name='index.html'), name='index'),  # 主页
+    path('index/', IndexView.as_view(), name='index'),  # 主页
     path('users/', include((apps.users.urls, 'users'))),  # 用户模块
     path('org/', include((apps.organization.urls, 'org'))),  # 机构模块
     path('ope/', include((apps.operation.urls, 'ope'))),  # 用户相关操作模块

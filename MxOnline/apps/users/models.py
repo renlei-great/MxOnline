@@ -21,6 +21,10 @@ class UserProfile(AbstractUser):
         verbose_name = "用户信息"
         verbose_name_plural = verbose_name
 
+    def read_num(self):
+        read_count = self.usermessage_set.filter(has_read=False).count()
+        return read_count
+
     def __str__(self):
         if self.nick_name:
             return self.nick_name
