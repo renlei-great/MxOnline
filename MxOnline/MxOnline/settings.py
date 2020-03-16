@@ -135,6 +135,7 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+# ｄbug模式下获取静态文件
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
@@ -152,6 +153,10 @@ DB = 0
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# 非dbug模式下获取静态文件
+# STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 # 使用第三方包完成分页的相关配置
 PAGINATION_SETTINGS = {
     # 省略号中间显示多少个
@@ -164,3 +169,8 @@ PAGINATION_SETTINGS = {
 
 # 配置进入需要登录的页面所要跳转的页面
 LOGIN_URL = '/users/login'
+
+# 自定义登录认证配置
+AUTHENTICATION_BACKENDS = [
+    'apps.users.views.CustomAuth'
+]

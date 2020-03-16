@@ -3,6 +3,7 @@ from django.views import View
 from pure_pagination import Paginator, PageNotAnInteger
 from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 
 from apps.courses.models import Course, CourseTag, Video
 from utils.OrgUtils import judge_org_login
@@ -211,6 +212,12 @@ class CourseListView(View):
             # 最新排序-add_time
             all_course = Course.objects.all().order_by('-add_time')
 
+        # 搜索功能
+        # 获取要查询的字符串
+        keywords = request.GET.get('keywords', '')
+        if keywords:
+            all_course = Course.objects.filter(Q(name__icontains=keywords) | Q(desc__icontains=keywords))
+
         # 热门课程推荐
         click_course = Course.objects.all().order_by('-click_nums')[:3]
 
@@ -230,6 +237,8 @@ class CourseListView(View):
             'page_course': page_course,
             'click_course': click_course,
             'sort': sort,
+            'option': 'course',
+            'keywords': keywords
         }
         return render(request, 'course-list.html', context)
 

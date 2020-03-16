@@ -3,6 +3,7 @@ from django.views.generic import View
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect, JsonResponse
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
 
 from apps.organization.models import CourseOrg, City, Teacher
 from apps.courses.models import Course
@@ -61,6 +62,13 @@ class TeacherListView(View):
         all_teacher = Teacher.objects.all()
         # 查询共有多少教师
         all_teacher_num = all_teacher.count()
+
+        # 搜索功能
+        # 获取要查询的字符串
+        keywords = request.GET.get('keywords', '')
+        if keywords:
+            all_teacher = Teacher.objects.filter(name__icontains=keywords)
+
         # 使用什么字段进行排序
         sort = request.GET.get('sort', "")
 
@@ -86,6 +94,8 @@ class TeacherListView(View):
             'all_teacher_num': all_teacher_num,
             'page': page,
             'sort': sort,
+            'option': 'teacher',
+            'keywords': keywords,
         }
 
         # 返回数据
@@ -125,6 +135,12 @@ class OrgListView(View):
 
         # 查询所有机构
         all_org = CourseOrg.objects.all()
+
+        # 搜索功能
+        # 获取要查询的字符串
+        keywords = request.GET.get('keywords', '')
+        if keywords:
+            all_org = CourseOrg.objects.filter(Q(name__icontains=keywords) | Q(desc__icontains=keywords))
 
         # 授课机构排序
         hot_orgs = all_org.order_by('-click_nums')[:3]
@@ -194,6 +210,8 @@ class OrgListView(View):
             'city_id': city_id,
             'sort': sort,
             'hot_orgs': hot_orgs,
+            'option': 'org',
+            'keywords': keywords,
         }
 
         return render(request, 'org-list.html', countext)

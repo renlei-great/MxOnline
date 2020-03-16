@@ -6,6 +6,8 @@ from django.http.response import HttpResponseRedirect, JsonResponse
 import redis
 from django.contrib.auth.mixins import LoginRequiredMixin
 from pure_pagination import Paginator
+from django.contrib.auth.backends import ModelBackend
+from django.db.models import Q
 
 from apps.users.forms import LoginForm, CaptchaForm, MobileLoginForm, RegisterForm, RegisterPostForm, UploadImageForm, UploadInfoForm, UpdatePwsForm, UpdateMobileForm
 from MxOnline.settings import APIKEY
@@ -21,6 +23,17 @@ def message_num(request):
         return {'message_read_num': request.user.read_num()}
     else:
         return {}
+
+
+# 自定义用户认证
+class CustomAuth(ModelBackend):
+    def authenticate(self, request, username=None, password=None, **kwargs):
+        try:
+            user = UserProfile.objects.get(Q(username=username)|Q(mobile=username))
+            if user.check_password(password):
+                return user
+        except Exception:
+            return None
 
 
 # /index
@@ -373,9 +386,12 @@ class LoginView(View):
             return redirect(reverse('index'))
         login_form = CaptchaForm(request.POST)
 
+        # 轮播图
+        banners = Banner.objects.all()[:3]
+
         next = request.GET.get('next', '')
 
-        return render(request, 'login.html', {'login_form': login_form, 'next': next})
+        return render(request, 'login.html', {'login_form': login_form, 'next': next, 'banners': banners})
 
     def post(self, request):
         """登录请求"""
