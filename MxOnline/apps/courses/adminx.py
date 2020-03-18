@@ -1,6 +1,8 @@
 import xadmin
+from xadmin.layout import Fieldset, Main, Side, Row, FormHelper
 
 from apps.courses.models import Course, Lesson, Video, CourseResource, CourseTag
+
 
 
 class CommSttings(object):
@@ -20,6 +22,41 @@ class CourseAdmin(object):
     search_fields = ['name', 'desc', 'detail', 'degree', 'students']
     list_filter = ['name', 'teacher__name', 'desc', 'detail', 'degree', 'learn_times', 'students']
     list_editable = ["degree", "desc"]
+
+
+class NewCourseAdmin(object):
+    list_display = ['name', 'desc', 'detail', 'degree', 'learn_times', 'students', 'teacher']
+    search_fields = ['name', 'desc', 'detail', 'degree', 'students']
+    list_filter = ['name', 'teacher__name', 'desc', 'detail', 'degree', 'learn_times', 'students']
+    list_editable = ["degree", "desc"]
+
+    def get_form_layout(self):
+        if self.org_obj:
+            # 判断是否时新增，返回真则不是
+            self.form_layout = (
+                Main(
+                    Fieldset('讲师信息',
+                             'teacher', 'course_org',
+                             css_class='unsort no_title'
+                             ),
+                    Fieldset('基本信息',
+                             'name', 'desc', 'notice', 'youneed_know', 'teacher_tell', 'detail',
+                             Row('learn_times', 'degree'),
+                             Row('category', 'tag'),
+                             ),
+                    ),
+                Side(
+                    Fieldset('访问信息',
+                            Row('students', 'fav_nums'),
+                            'click_nums', 'add_time',
+                             ),
+
+                    Fieldset('是否选择',
+                                'is_banner', 'is_classics'
+                            ),
+                    ),
+            )
+        return super(NewCourseAdmin, self).get_form_layout()
 
 
 class LessonAdmin(object):
@@ -50,7 +87,7 @@ xadmin.site.register(CourseTag, CourseTagAdmin)
 xadmin.site.register(Lesson, LessonAdmin)
 xadmin.site.register(Video, VideoAdmin)
 xadmin.site.register(CourseResource, CourseResourceAdmin)
-xadmin.site.register(Course, CourseAdmin)
+xadmin.site.register(Course, NewCourseAdmin)
 xadmin.site.register(xadmin.views.CommAdminView, CommSttings)
 xadmin.site.register(xadmin.views.BaseAdminView, BaseSttings)
 
