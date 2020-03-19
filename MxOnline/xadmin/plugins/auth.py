@@ -73,14 +73,14 @@ class UserAdmin(object):
             attrs['form_class'] = PermissionModelMultipleChoiceField
         return attrs
 
-    def get_model_form(self, **kwargs):
+    def get_model_form(self, **kwargs):  # 控制可以更改哪些字段
         if self.org_obj is None:
             self.form = UserCreationForm
         else:
             self.form = UserChangeForm
         return super(UserAdmin, self).get_model_form(**kwargs)
 
-    def get_form_layout(self):
+    def get_form_layout(self):  # 控制前段显示布局
         if self.org_obj:
             self.form_layout = (
                 Main(

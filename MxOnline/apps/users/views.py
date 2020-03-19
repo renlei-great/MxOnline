@@ -73,9 +73,9 @@ class UsersMessageView(LoginRequiredMixin, View):
         """我的消息显示"""
         # 查询出用户的个人消息
         # user_message = UserMessage.objects.filter(user=request.user)
-        user_message = request.user.usermessage_set.all()
+        user_message = request.user.usermessage_set.all().order_by('-add_time')
 
-        for message in user_message:
+        for message in user_message.filter(has_read=False):
             message.has_read = True
             message.save()
 

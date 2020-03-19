@@ -30,11 +30,19 @@ class NewCourseAdmin(object):
     list_filter = ['name', 'teacher__name', 'desc', 'detail', 'degree', 'learn_times', 'students']
     list_editable = ["degree", "desc"]
 
-    def get_form_layout(self):
+    def queryset(self):  # 控制对数据的过滤
+        qs = super().queryset()
+        if not self.request.user.is_superuser:
+            teacher = self.request.user.teacher
+            qs = qs.filter(teacher=self.request.user.teacher)
+        pass
+        return qs
+
+    def get_form_layout(self):  # 修改显示布局
         if self.org_obj:
             # 判断是否时新增，返回真则不是
             self.form_layout = (
-                Main(
+                Main(  # 左侧显示
                     Fieldset('讲师信息',
                              'teacher', 'course_org',
                              css_class='unsort no_title'
@@ -45,7 +53,7 @@ class NewCourseAdmin(object):
                              Row('category', 'tag'),
                              ),
                     ),
-                Side(
+                Side(  # 右侧小框显示
                     Fieldset('访问信息',
                             Row('students', 'fav_nums'),
                             'click_nums', 'add_time',
@@ -62,7 +70,13 @@ class NewCourseAdmin(object):
 class LessonAdmin(object):
     list_display = ['course', 'name', 'add_time']
     search_fields = ['course', 'name']
-    list_filter = ['course__name', 'name', 'add_time']  # 如果时外键可以加两个下划线意思是这个外键中的某个字段
+    list_filter = ['course__name', 'name', 'add_time']  # 如果时外键可以加两个下划线意思是这个外键中的某个字段re
+
+    def queryset(self):
+        qs = super().queryset()
+        if not self.request.user.is_superuser:
+            qs = qs.filter(course__in=Course.objects.filter(teacher=self.request.user.teacher))
+        return qs
 
 
 class VideoAdmin(object):
@@ -75,6 +89,22 @@ class CourseResourceAdmin(object):
     list_display = ['course', 'name', 'file', 'add_time']
     search_fields = ['course', 'name', 'file']
     list_filter = ['course', 'name', 'file', 'add_time']
+
+    def queryset(self):
+        qs = super().queryset()
+        if not self.request.user.is_superuser:
+            qs = qs.filter(course__in=Course.objects.filter(teacher=self.request.user.teacher))
+        return qs
+
+    def save_models(self):  # 重写后台管理调用save操作
+        # 判断是否可以保存是不是此教师的课程
+        obj = self.new_obj
+        if obj.course.teacher.id is self.request.user.teacher.id:
+            obj.save()
+
+
+        # else:
+            # raise ValueError("这不是当前{}教师的课程".format(self.request.user.teacher.name))
 
 
 class CourseTagAdmin(object):

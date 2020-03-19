@@ -21,6 +21,22 @@ class UserCourseAdmin(object):
     search_fields = ['user', 'course']
     list_filter = ['user', 'course', 'add_time']
 
+    def save_models(self):
+        obj = self.new_obj
+        if not obj.id:
+            # 进行新增
+            obj.save()
+            # 提出课程对学习人数加１
+            course = obj.course
+            course.students += 1
+            course.save()
+            # 向用户发送一条消息
+            message = UserMessage()
+            message.user = obj.user
+            message.message = '欢迎{}学习{}课程'.format(obj.user.nick_name, course.name)
+            message.save()
+
+
 
 class UserMessageAdmin(object):
     list_display = ['user', 'message', 'has_read', 'add_time']

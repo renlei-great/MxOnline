@@ -3,6 +3,7 @@ from django.db import models
 from db.base_models import BaseModledb
 
 
+
 class City(BaseModledb):
     name = models.CharField(max_length=20, verbose_name=u"城市名")
     desc = models.CharField(max_length=200, verbose_name=u"描述")
@@ -45,7 +46,9 @@ class CourseOrg(BaseModledb):
         return self.name
 
 
+from apps.users.models import UserProfile
 class Teacher(BaseModledb):
+    user = models.OneToOneField(UserProfile, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="用户")
     org = models.ForeignKey(CourseOrg, on_delete=models.CASCADE, verbose_name="所属机构")
     name = models.CharField(max_length=50, verbose_name=u"教师名")
     work_years = models.IntegerField(default=0, verbose_name="工作年限")
