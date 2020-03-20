@@ -35,6 +35,15 @@ class Course(BaseModledb):
         return self.name
 
 
+class BannerCorse(Course):
+    """对ｃｏｕｒｓｅ同一张表实现不同管理器"""
+
+    class Meta:
+        verbose_name = "课程轮播"
+        verbose_name_plural = verbose_name
+        proxy = True  # 防止从新生成表
+
+
 class CourseTag(BaseModledb):
     course = models.ForeignKey(Course, on_delete=models.CASCADE,  verbose_name='课程')
     tag = models.CharField(max_length=100, verbose_name='章节名')

@@ -1,7 +1,7 @@
 import xadmin
 from xadmin.layout import Fieldset, Main, Side, Row, FormHelper
 
-from apps.courses.models import Course, Lesson, Video, CourseResource, CourseTag
+from apps.courses.models import Course, Lesson, Video, CourseResource, CourseTag, BannerCorse
 
 
 
@@ -22,6 +22,20 @@ class CourseAdmin(object):
     search_fields = ['name', 'desc', 'detail', 'degree', 'students']
     list_filter = ['name', 'teacher__name', 'desc', 'detail', 'degree', 'learn_times', 'students']
     list_editable = ["degree", "desc"]
+
+
+class BannerCorseAdmin(object):
+    list_display = ['name', 'desc', 'detail', 'degree', 'learn_times', 'students', 'teacher']
+    search_fields = ['name', 'desc', 'detail', 'degree', 'students']
+    list_filter = ['name', 'teacher__name', 'desc', 'detail', 'degree', 'learn_times', 'students']
+    list_editable = ["degree", "desc"]
+
+    def queryset(self):  # 对同一张表实现不同后台管理器
+        qs = super().queryset()  # 查询出这个表中的所有字段
+        # 查询出时广告位的课程
+        qs = qs.filter(is_banner=True)
+        return qs
+
 
 
 class NewCourseAdmin(object):
@@ -113,6 +127,8 @@ class CourseTagAdmin(object):
     list_filter = ['course', 'tag', 'add_time']
 
 
+
+xadmin.site.register(BannerCorse, BannerCorseAdmin)
 xadmin.site.register(CourseTag, CourseTagAdmin)
 xadmin.site.register(Lesson, LessonAdmin)
 xadmin.site.register(Video, VideoAdmin)
