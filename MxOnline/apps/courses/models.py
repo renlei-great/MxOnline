@@ -1,5 +1,7 @@
 
 from django.db import models
+from django.utils.safestring import mark_safe
+from django.shortcuts import reverse
 
 from db.base_models import BaseModledb
 from apps.organization.models import Teacher
@@ -30,6 +32,16 @@ class Course(BaseModledb):
     class Meta:
         verbose_name = "课程信息"
         verbose_name_plural = verbose_name
+
+    def show_image(self):
+        return mark_safe("<img src='{}'>".format(self.image.url))
+    show_image.short_description = '图片'
+
+    def go_to_course(self):
+        url = '/course/detail/{}'.format(self.id)
+        # return mark_safe("<a href=''>转到</a>")
+        return mark_safe("<a href='{}'>转到{}</a>".format(url, self.name))
+    go_to_course.short_description = '转到'
 
     def __str__(self):
         return self.name

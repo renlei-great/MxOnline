@@ -39,7 +39,7 @@ class BannerCorseAdmin(object):
 
 
 class NewCourseAdmin(object):
-    list_display = ['name', 'desc', 'detail', 'degree', 'learn_times', 'students', 'teacher']
+    list_display = ['name', 'desc','show_image','go_to_course', 'detail', 'degree', 'learn_times', 'students', 'teacher']
     search_fields = ['name', 'desc', 'detail', 'degree', 'students']
     list_filter = ['name', 'teacher__name', 'desc', 'detail', 'degree', 'learn_times', 'students']
     list_editable = ["degree", "desc"]
