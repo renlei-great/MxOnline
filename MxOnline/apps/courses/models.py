@@ -7,6 +7,7 @@ from db.base_models import BaseModledb
 from apps.organization.models import Teacher
 from apps.organization.models import CourseOrg
 
+from DjangoUeditor.models import UEditorField
 
 class Course(BaseModledb):
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, verbose_name="讲师")
@@ -23,7 +24,7 @@ class Course(BaseModledb):
     tag = models.CharField(default="", verbose_name="课程标签", max_length=10)
     youneed_know = models.CharField(default="", max_length=300, verbose_name="课程须知")
     teacher_tell = models.CharField(default="", max_length=300, verbose_name="老师告诉你")
-    detail = models.TextField(verbose_name="课程详情")
+    detail = UEditorField(verbose_name="课程详情", width=600, height=230, imagePath="ueditor/images/", filePath="ueditor/files/")
     is_banner = models.BooleanField(default=False, verbose_name='是否广告')
     image = models.ImageField(upload_to="courses/%Y/%m", verbose_name="封面图", max_length=100)
 
@@ -58,7 +59,7 @@ class BannerCorse(Course):
 
 class CourseTag(BaseModledb):
     course = models.ForeignKey(Course, on_delete=models.CASCADE,  verbose_name='课程')
-    tag = models.CharField(max_length=100, verbose_name='章节名')
+    tag = models.CharField(max_length=100, verbose_name='标签名')
 
     class Meta:
         verbose_name = "课程标签"

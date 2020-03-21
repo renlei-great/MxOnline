@@ -1,6 +1,7 @@
 from django.db import models
 
 from db.base_models import BaseModledb
+from DjangoUeditor.models import UEditorField
 
 
 
@@ -18,7 +19,7 @@ class City(BaseModledb):
 
 class CourseOrg(BaseModledb):
     name = models.CharField(max_length=50, verbose_name="机构名称")
-    desc = models.TextField(verbose_name="描述")
+    desc = UEditorField(verbose_name="描述", width=600, height=230, imagePath="ueditor/images/", filePath="ueditor/files/")
     tag = models.CharField(default="全国知名", max_length=10, verbose_name="机构标签")
     category = models.CharField(default="pxjg", verbose_name="机构类别", max_length=4,
                                 choices=(("pxjg", "培训机构"), ("gr", "个人"), ("gx", "高校")))

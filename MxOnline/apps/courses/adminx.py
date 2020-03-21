@@ -37,6 +37,21 @@ class BannerCorseAdmin(object):
         return qs
 
 
+class CourseTagInline:
+    """关联课程编辑页，一次性编辑多张表"""
+    model = CourseTag
+    extra = 1  # 打开这个页面时新增几个
+    style = "tab"
+    exclude = ["add_time"]  # 隐藏此字段
+
+
+class LessonInline:
+    """给课程页关联课程章节页，可以一次性编辑多张表"""
+    model = Lesson
+    extra = 1
+    style = "tab"
+    exclude = ["add_time"]
+
 
 class NewCourseAdmin(object):
     list_display = ['name', 'desc','show_image','go_to_course', 'detail', 'degree', 'learn_times', 'students', 'teacher']
@@ -46,6 +61,12 @@ class NewCourseAdmin(object):
     readonly_fields = ['students', 'fav_nums', 'click_nums']
     exclude = ['add_time']
     ordering = ['-students']
+    model_icon = 'fa fa-map-o'
+    inlines = [CourseTagInline, LessonInline]
+    style_fields = {
+        "detail": "ueditor"  # detail表示此模型类的那个字段时富文本
+    }
+
 
     def queryset(self):  # 控制对数据的过滤
         qs = super().queryset()
@@ -72,7 +93,7 @@ class NewCourseAdmin(object):
                     ),
                 Side(  # 右侧小框显示
                     Fieldset('访问信息',
-                            'click_nums', 'students', 'fav_nums', 'add_time'
+                            'click_nums', 'students', 'fav_nums'
                              ),
 
                     Fieldset('是否选择',

@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'apps.users.apps.UsersConfig',  # 注册
     'crispy_forms',
     'xadmin.apps.XAdminConfig',
-    'DjangoUeditor',
+    'DjangoUeditor',  # 注册富文本
     'captcha',  # 发送验证码的包
     'pure_pagination',  # 分页
 ]

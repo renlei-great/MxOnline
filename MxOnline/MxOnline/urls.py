@@ -38,4 +38,5 @@ urlpatterns = [
     url(r'^captcha/', include('captcha.urls')),  # 验证码
     url(r'^media/(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT}),  # 获取media文件
     # url(r'^static/(?P<path>.*)$', serve, {'document_root': STATIC_ROOT}),  # 获取static文件
+    url(r'^ueditor/',include('DjangoUeditor.urls')),  # 富文本ｕｒｌ
 ]
