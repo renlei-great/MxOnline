@@ -43,6 +43,9 @@ class NewCourseAdmin(object):
     search_fields = ['name', 'desc', 'detail', 'degree', 'students']
     list_filter = ['name', 'teacher__name', 'desc', 'detail', 'degree', 'learn_times', 'students']
     list_editable = ["degree", "desc"]
+    readonly_fields = ['students', 'fav_nums', 'click_nums']
+    exclude = ['add_time']
+    ordering = ['-students']
 
     def queryset(self):  # 控制对数据的过滤
         qs = super().queryset()
@@ -69,8 +72,7 @@ class NewCourseAdmin(object):
                     ),
                 Side(  # 右侧小框显示
                     Fieldset('访问信息',
-                            Row('students', 'fav_nums'),
-                            'click_nums', 'add_time',
+                            'click_nums', 'students', 'fav_nums', 'add_time'
                              ),
 
                     Fieldset('是否选择',
