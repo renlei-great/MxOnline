@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'DjangoUeditor',  # 注册富文本
     'captcha',  # 发送验证码的包
     'pure_pagination',  # 分页
+    'import_export'  # xadmin的导入导出插件
 ]
 
 MIDDLEWARE = [

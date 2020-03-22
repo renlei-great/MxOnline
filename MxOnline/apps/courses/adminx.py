@@ -1,7 +1,9 @@
 import xadmin
 from xadmin.layout import Fieldset, Main, Side, Row, FormHelper
+from import_export import resources
 
 from apps.courses.models import Course, Lesson, Video, CourseResource, CourseTag, BannerCorse
+
 
 
 
@@ -53,7 +55,18 @@ class LessonInline:
     exclude = ["add_time"]
 
 
+class MyResource(resources.ModelResource):
+    """导入导出的类"""
+    class Meta:
+        model = Course
+        # fields = ('name', 'description',)
+        # exclude = ()
+
+
 class NewCourseAdmin(object):
+    # xadmin的导入导出
+    import_export_args = {'import_resource_class': MyResource, 'export_resource_class': MyResource}
+
     list_display = ['name', 'desc','show_image','go_to_course', 'detail', 'degree', 'learn_times', 'students', 'teacher']
     search_fields = ['name', 'desc', 'detail', 'degree', 'students']
     list_filter = ['name', 'teacher__name', 'desc', 'detail', 'degree', 'learn_times', 'students']
